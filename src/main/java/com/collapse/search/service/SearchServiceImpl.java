@@ -6,6 +6,7 @@ import com.collapse.search.dto.SearchRequestDto;
 import com.collapse.search.dto.SearchResponseDto;
 import com.collapse.search.util.common.parse.ParseSearchResultUtil;
 import com.collapse.search.util.query.MultiSearchBuilder;
+import com.collapse.search.util.query.log.LogQueryBuilder;
 import com.collapse.search.util.query.search.SourceBuilder;
 import com.collapse.search.util.query.search.common.category.CategoryEnum;
 import com.collapse.search.vo.CollapseVo;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -42,10 +45,20 @@ public class SearchServiceImpl implements SearchService{
 
     @Override
     public void insertSearchLog(SearchRequestDto searchRequestDto, SearchResponseDto searchResponseDto,
-                                HttpServletRequest httpServletRequest) {
+                                HttpServletRequest httpServletRequest) throws IOException {
         if(isWorth(searchRequestDto)) {
-            IndexRequest indexRequest =
+            IndexRequest indexRequest = LogQueryBuilder.buildIndexRequest(searchRequestDto,httpServletRequest,searchResponseDto);
+            searchDao.insertSearchLog(indexRequest);
         }
+    }
+
+    @Override
+    public List<Map<String, Object>> getAutoComplete(SearchRequestDto searchRequestDto) throws IOException {
+        SearchRequest autoCompleteRequest = new SearchRequest(IoStudioConfig.SEARCH_AUTOCOMPLETE_INDEX);
+        autoCompleteRequest.source(SourceBuilder.buildAutocompleteSource(searchRequestDto.getQuery()));
+        SearchResponse searchResponse = searchDao.getSearchResponse(autoCompleteRequest);
+
+        return null;
     }
 
     private boolean isWorth(SearchRequestDto searchRequestDto) {

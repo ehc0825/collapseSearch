@@ -1,16 +1,15 @@
 package com.collapse.search.util.query.search;
 
+import com.collapse.search.config.IoStudioConfig;
 import com.collapse.search.config.SearchConfig;
 import com.collapse.search.dto.SearchRequestDto;
 import com.collapse.search.dto.SearchSourceDto;
 import com.collapse.search.util.query.aggregation.CollapseCountAggBuilder;
 import com.collapse.search.util.query.aggregation.StatsAggBuilder;
-import com.collapse.search.util.query.search.common.CommonQueryBuilder;
-import com.collapse.search.util.query.search.common.NormalQueryBuilder;
-import com.collapse.search.util.query.search.common.SizeQueryBuilder;
-import com.collapse.search.util.query.search.common.TermQueryBuilder;
+import com.collapse.search.util.query.search.common.*;
 import com.collapse.search.util.query.search.common.category.CategoryQueryBuilder;
 import com.collapse.search.util.query.search.typoCorrect.SuggestQueryBuilder;
+import com.collapse.search.vo.AutoCompleteVo;
 import com.collapse.search.vo.CategoryVo;
 import com.collapse.search.vo.CollapseVo;
 import com.collapse.search.vo.NormalSearchVo;
@@ -84,6 +83,20 @@ public class SourceBuilder {
     private static SearchSourceDto buildTermQueryForStatsAgg(String collapsedFieldValue, CollapseVo collapseVo, SearchSourceDto searchSourceDto) {
         searchSourceDto = TermQueryBuilder
                 .buildTermQuery(SearchConfig.FIELD_FOR_COLLAPSE,collapsedFieldValue,searchSourceDto);
+        return searchSourceDto;
+    }
+
+    public static SearchSourceBuilder buildAutocompleteSource(String query) {
+        SearchSourceDto searchSourceDto = createSearchSource(new String[]{IoStudioConfig.SEARCH_AUTOCOMPLETE_FIELD});
+        searchSourceDto = buildAutoCompleteQuery(query,searchSourceDto);
+        searchSourceDto = setBoolQueryToSearchSourceBuilder(searchSourceDto);
+        return searchSourceDto.getSearchSourceBuilder();
+    }
+
+    private static SearchSourceDto buildAutoCompleteQuery(String query, SearchSourceDto searchSourceDto) {
+        AutoCompleteVo autoCompleteVo = new AutoCompleteVo(query);
+        searchSourceDto = AutoCompleteQueryBuilder.buildAutoCompleteQuery(autoCompleteVo,searchSourceDto);
+        searchSourceDto = HighlightQueryBuilder.buildQuery(searchSourceDto);
         return searchSourceDto;
     }
 }
