@@ -175,4 +175,9 @@ public class ParseSearchResultUtil {
         searchResponseDto.setResults(results);
         return searchResponseDto;
     }
+
+    public static List<Map<String, Object>> getHistoryResults(SearchResponse searchResponse) {
+        List<Map<String,Object>> results = getResults(searchResponse,new String[]{IoStudioConfig.SEARCH_HISTORY_KEYWORD_FIELD},false);
+        return results;
+    }
 }

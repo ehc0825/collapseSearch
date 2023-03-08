@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -58,11 +59,21 @@ public class SearchLogVo {
         this.re = searchRequestDto.isResearch();
         this.sort = "default";
         this.asc = false;
-        this.user = searchRequestDto.getUserName();
+        this.user = getUserName(httpServletRequest,searchRequestDto);
         this.took = searchResponseDto.getTook();
         this.total = searchResponseDto.getTotal();
         this.createDate = DateUtil.getNowDate();
 
+    }
+
+    private String getUserName(HttpServletRequest httpServletRequest, SearchRequestDto searchRequestDto) {
+        if(StringUtils.isEmpty(searchRequestDto.getUserName()))
+        {
+            return HttpServletRequestUtil.getIp(httpServletRequest);
+        }
+        else {
+            return searchRequestDto.getUserName();
+        }
     }
 
 }

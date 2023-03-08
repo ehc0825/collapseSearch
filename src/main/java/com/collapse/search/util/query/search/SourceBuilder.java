@@ -9,12 +9,12 @@ import com.collapse.search.util.query.aggregation.StatsAggBuilder;
 import com.collapse.search.util.query.search.common.*;
 import com.collapse.search.util.query.search.common.category.CategoryQueryBuilder;
 import com.collapse.search.util.query.search.typoCorrect.SuggestQueryBuilder;
-import com.collapse.search.vo.AutoCompleteVo;
-import com.collapse.search.vo.CategoryVo;
-import com.collapse.search.vo.CollapseVo;
-import com.collapse.search.vo.NormalSearchVo;
+import com.collapse.search.vo.*;
+import jdk.internal.org.jline.reader.History;
 import lombok.experimental.UtilityClass;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+
+import javax.servlet.http.HttpServletRequest;
 
 @UtilityClass
 public class SourceBuilder {
@@ -99,4 +99,15 @@ public class SourceBuilder {
         searchSourceDto = HighlightQueryBuilder.buildQuery(searchSourceDto);
         return searchSourceDto;
     }
+
+    public static SearchSourceBuilder buildHistorySource(SearchRequestDto searchRequestDto,
+                                                         HttpServletRequest httpServletRequest) {
+        SearchSourceDto searchSourceDto = createSearchSource(new String[]{IoStudioConfig.SEARCH_HISTORY_KEYWORD_FIELD});
+        HistoryVo historyVo = new HistoryVo(searchRequestDto,httpServletRequest);
+        searchSourceDto = HistoryQueryBuilder.buildHistoryQuery(historyVo,searchSourceDto);
+        searchSourceDto = CollapseCountAggBuilder.buildCollapseForHistory(searchSourceDto);
+        searchSourceDto = setBoolQueryToSearchSourceBuilder(searchSourceDto);
+        return searchSourceDto.getSearchSourceBuilder();
+    }
+
 }

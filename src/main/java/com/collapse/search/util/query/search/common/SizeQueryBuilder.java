@@ -39,4 +39,10 @@ public class SizeQueryBuilder {
                 .size(0));
         return searchSourceDto;
     }
+
+    public SearchSourceDto buildCustomSizeQuery(SearchSourceDto searchSourceDto,int size) {
+        searchSourceDto.setSearchSourceBuilder(searchSourceDto.getSearchSourceBuilder()
+                .size(size).from(0));
+        return searchSourceDto;
+    }
 }

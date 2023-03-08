@@ -51,7 +51,7 @@ public class SearchConfig {
     /**
      * sort
      */
-    public static final String DATE_FIELD = "created-date";
+    public static final String DATE_FIELD = "createdDate";
 
     public SearchConfig() {
         throw new IllegalStateException("Can not be instantiated");

@@ -34,4 +34,11 @@ public class SearchController {
         return results;
     }
 
+    @GetMapping(value = "/history", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public List<Map<String,Object>> history(@RequestBody SearchRequestDto searchRequestDto, HttpServletRequest httpServletRequest)
+        throws IOException {
+        List<Map<String,Object>> results = searchService.getSearchHistory(searchRequestDto,httpServletRequest);
+        return results;
+    }
+
 }

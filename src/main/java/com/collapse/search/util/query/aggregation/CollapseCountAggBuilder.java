@@ -1,5 +1,6 @@
 package com.collapse.search.util.query.aggregation;
 
+import com.collapse.search.config.IoStudioConfig;
 import com.collapse.search.config.SearchConfig;
 import com.collapse.search.dto.SearchSourceDto;
 import lombok.experimental.UtilityClass;
@@ -20,6 +21,18 @@ public class CollapseCountAggBuilder {
         SearchSourceBuilder searchSourceBuilder = searchSourceDto.getSearchSourceBuilder();
         searchSourceBuilder = buildCollapseQuery(searchSourceBuilder);
         searchSourceBuilder = buildCountAggregation(searchSourceBuilder);
+        searchSourceDto.setSearchSourceBuilder(searchSourceBuilder);
+        return searchSourceDto;
+    }
+    public SearchSourceBuilder buildCollapseQuery(SearchSourceBuilder searchSourceBuilder, String collapseField) {
+        CollapseBuilder collapseBuilder = new CollapseBuilder(collapseField);
+        searchSourceBuilder.collapse(collapseBuilder);
+        return searchSourceBuilder;
+    }
+
+    public SearchSourceDto buildCollapseForHistory(SearchSourceDto searchSourceDto) {
+        SearchSourceBuilder searchSourceBuilder = searchSourceDto.getSearchSourceBuilder();
+        searchSourceBuilder = buildCollapseQuery(searchSourceBuilder, IoStudioConfig.SEARCH_HISTORY_KEYWORD_FIELD);
         searchSourceDto.setSearchSourceBuilder(searchSourceBuilder);
         return searchSourceDto;
     }

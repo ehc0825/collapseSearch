@@ -61,6 +61,16 @@ public class SearchServiceImpl implements SearchService{
         return null;
     }
 
+    @Override
+    public List<Map<String, Object>> getSearchHistory(SearchRequestDto searchRequestDto, HttpServletRequest httpServletRequest)
+            throws IOException {
+        SearchRequest historyRequest = new SearchRequest(IoStudioConfig.SEARCH_LOG_INDEX);
+        historyRequest.source(SourceBuilder.buildHistorySource(searchRequestDto,httpServletRequest));
+        SearchResponse searchResponse = searchDao.getSearchResponse(historyRequest);
+        List<Map<String, Object>> results = ParseSearchResultUtil.getHistoryResults(searchResponse);
+        return results;
+    }
+
     private boolean isWorth(SearchRequestDto searchRequestDto) {
         return isFirstPage(searchRequestDto) && isQueryNotEmpty(searchRequestDto);
     }

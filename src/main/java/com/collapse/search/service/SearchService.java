@@ -14,4 +14,6 @@ public interface SearchService {
     void insertSearchLog(SearchRequestDto searchRequestDto, SearchResponseDto searchResponseDto, HttpServletRequest httpServletRequest) throws IOException;
 
     List<Map<String, Object>> getAutoComplete(SearchRequestDto searchRequestDto) throws IOException;
+
+    List<Map<String, Object>> getSearchHistory(SearchRequestDto searchRequestDto, HttpServletRequest httpServletRequest) throws IOException;
 }
