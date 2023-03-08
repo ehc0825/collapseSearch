@@ -9,7 +9,7 @@ import lombok.experimental.UtilityClass;
 public class SizeQueryBuilder {
 
     public SearchSourceDto buildSizeQuery(SearchSourceDto searchSourceDto, SearchRequestDto searchRequestDto) {
-        int from = calCurrentPage(searchRequestDto.getCurrentPage());
+        int from = calCurrentPage(searchRequestDto);
         int searchSize = setSearchSize(searchRequestDto);
         searchSourceDto.setSearchSourceBuilder(searchSourceDto.getSearchSourceBuilder()
                 .size(searchSize)
@@ -18,12 +18,13 @@ public class SizeQueryBuilder {
 
     }
 
-    private static int calCurrentPage(int currentPage) {
-        if(currentPage ==0 || currentPage ==1) {
+    private static int calCurrentPage(SearchRequestDto searchRequestDto) {
+        if(searchRequestDto.getCurrentPage() ==0 || searchRequestDto.getCurrentPage() ==1) {
             return 0;
         }
         else {
-            return (currentPage -1) * 10;
+            int size = setSearchSize(searchRequestDto);
+            return (searchRequestDto.getCurrentPage() -1) * size;
         }
     }
     private static int setSearchSize(SearchRequestDto searchRequestDto) {
